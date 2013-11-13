@@ -3,6 +3,7 @@
 typedef struct _cidade {
 
 	char *nome_cidade;
+	char *nome_estado;
 
 	int qtd_pessoa_sem_rendimento;
 	int qtd_pessoas_0_1;
@@ -12,4 +13,6 @@ typedef struct _cidade {
 	int qtd_pessoas_5_10;
 	int qtd_pessoas_10_20;
 	int qtd_pessoas_mais_20;
+
+	struct _cidade *prox;
 } cidade;

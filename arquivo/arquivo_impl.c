@@ -12,5 +12,7 @@ FILE * inicializar(char *file_name){
 		exit(-1);
 	}
 
+	printf("Arquivo inicializado.\n");
+	
 	return arquivo;
 }
