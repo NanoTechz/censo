@@ -1,7 +1,9 @@
 #include <stdlib.h>
-#include "modelo/cidade.h"
-#include "modelo/estado.h"
-#include "arquivo/arquivo.h"
+#include <stdio.h>
+#include <string.h>
+
+#include "cidade.h"
+#include "arquivo.h"
 #include "util.h"
 
 #define DEFAULT_NAME "database.txt"
