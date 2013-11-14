@@ -2,8 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-FILE * inicializar(char *file_name);
+FILE * inicializar(char *file_name){
+	FILE *arquivo;
 
-void salvarCidade(FILE *arquivo, char *valor_linha);
+	arquivo = fopen(file_name, "a+t");
 
-void deletarCidade(FILE *arquivo, char *nome_cidade);
+	if(arquivo == NULL){
+		printf("Erro na leitura ou na criação do arquivo (%s).\n", file_name);
+		printf("Pressione qualquer tecla para encerrar o programa.\n");
+		getchar();
+		exit(-1);
+	}
+
+	printf("Arquivo inicializado.\n");
+	
+	return arquivo;
+}

@@ -8,6 +8,20 @@
 
 #define DEFAULT_NAME "database.txt"
 
+
+/**
+ * arquivo.h
+ * arquvo com funções para manipular o arquivo
+ *
+ * cidade.h
+ * arquivo com a struct
+ *
+ * util.h
+ * arquivo com funções "utéis" para a execução do sistema,
+ * criado principalmente para deixar o arquivo main limpo.
+ *
+ */
+
 int main(){
 	int confirmacao = 0;
 	FILE *arquivo;
