@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-FILE * inicializar(char *file_name){
+FILE * inicializarArquivo(char *file_name){
 	FILE *arquivo;
 
-	arquivo = fopen(file_name, "a+t");
+	arquivo = fopen(file_name, "a+b");
 
 	if(arquivo == NULL){
 		printf("Erro na leitura ou na criação do arquivo (%s).\n", file_name);

@@ -27,13 +27,12 @@ int main(){
 	FILE *arquivo;
 
 	/* Inicialização/Carregamento do ARQUIVO */
-	arquivo = inicializar(DEFAULT_NAME);
+	arquivo = inicializarArquivo(DEFAULT_NAME);
 
 
 	/* Loop com o fluxo principal */
-
 	do{
-		exibirOpcoes();
+		exibirOpcoes(); /* Exibi as opções do menu */
 	}while(confirmacao);
 
 	return 0;

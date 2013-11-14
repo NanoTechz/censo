@@ -1,9 +1,11 @@
 /* qtd_pessoas_(rendimento inicial)_(rendimento até) */
 
+#define TAM_STRING 50
+
 typedef struct _cidade {
 
-	char *nome_cidade;
-	char *nome_estado;
+	char nome_cidade[TAM_STRING];
+	char nome_estado[TAM_STRING];
 
 	int qtd_pessoa_sem_rendimento;
 	int qtd_pessoas_0_1;

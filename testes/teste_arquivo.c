@@ -4,7 +4,7 @@
 
 #include "../arquivo.h"
 
-#define FILENAME "teste.txt"
+#define FILENAME "teste.bin"
 #define TAM 50
 #define QTD 50
 #define null NULL
@@ -89,6 +89,7 @@ void ler(FILE *arquivo){
 		fseek(arquivo, 0, SEEK_SET);
 		
 		while(!feof(arquivo)){
+			no = (teste *) malloc(sizeof(teste));
 			fread(&no, sizeof(teste), 1, arquivo);
 			imprimirNo(no);
 		}

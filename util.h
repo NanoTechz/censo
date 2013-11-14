@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void exibirOpcoes(){
+void exibirOpcoes(){ /* Opções do menu */
 	printf("\nMenu de opções:\n");
 	printf("\t1) Cadastrar os dados de rendimento de uma cidade\n");
 	printf("\t2) Consultar os dados de uma cidade\n");
