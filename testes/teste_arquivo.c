@@ -4,7 +4,7 @@
 
 #include "../arquivo.h"
 
-#define FILENAME "teste.bin"
+#define FILENAME "teste.dat"
 #define TAM 50
 #define QTD 50
 #define null NULL
@@ -12,6 +12,8 @@
 typedef struct _teste
 {
 	char nome[50];
+	int id;
+
 	struct _teste *next;
 } teste;
 
@@ -22,9 +24,8 @@ teste * criarNo(int i){
 	teste *no;
 
 	no = (teste *)(malloc(sizeof(teste)));
-	strcpy(no->nome, "teste 00");
-	no->nome[6]= 48 + i/10;
-	no->nome[7]= 48 + i%10;
+	strcpy(no->nome, "nome_teste");
+	no->id = i;
 	no->next = null;
 
 	return no;
@@ -48,7 +49,7 @@ void gerarLista(){
 }
 
 void imprimirNo(teste *no){
-	printf("Nome: %s\n\tEndereco prox: %p\n", no->nome, no->next);
+	printf("Nome: %s\n\t%d\n", no->nome, no->id);
 }
 
 void imprimirLista(){
@@ -63,7 +64,7 @@ void imprimirLista(){
 }
 
 void gravar(FILE *arquivo){
-	int i;
+	int i, resultado;
 	teste *no;
 
 	if(first == null){
@@ -76,32 +77,41 @@ void gravar(FILE *arquivo){
 		do
 			{
 				fseek(arquivo, 0, SEEK_END);
-				fwrite(&no, sizeof(teste), 1, arquivo);
-				no=no->next;
-			} while (no != null);	
+				fprintf(arquivo, "%d ", no->id);
+				fputs(no->nome, arquivo);
+				fprintf(arquivo, "\n");
+				no = no->next;
+			} while (no != null);
+
+			fclose(arquivo);	
 	}
 }
 
 void ler(FILE *arquivo){
 	teste *no;
+	int id;
+	char nome[TAM];
 
 	if(arquivo){
 		fseek(arquivo, 0, SEEK_SET);
 		
 		while(!feof(arquivo)){
 			no = (teste *) malloc(sizeof(teste));
-			fread(&no, sizeof(teste), 1, arquivo);
+			fscanf(arquivo, "%d %s", &id, nome);
+			no->id = id;
+			strcpy(no->nome, nome);
 			imprimirNo(no);
+
+			free(no);
 		}
+
+		fclose(arquivo);
 	}
 }
 
 int main(){
 	FILE *arquivo;
 	int opcao;
-
-	arquivo = inicializarArquivo(FILENAME);
-
 
 	do{
 		printf("Escolha:\n");
@@ -112,9 +122,11 @@ int main(){
 		switch(opcao){
 			case 1 :
 				gerarLista();
+				arquivo = inicializarArquivo(FILENAME, MODO_GRAVACAO);
 				gravar(arquivo);
 				break;
 			case 2 : 
+				arquivo = inicializarArquivo(FILENAME, MODO_LEITURA);
 				ler(arquivo);
 				break;
 			default :
