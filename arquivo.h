@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-//constantes do modo
-#define MODO_LEITURA "rt"
-#define MODO_GRAVACAO "wt"
+//#include "cidade.h"
+//#include "util.h"
 
-FILE * inicializarArquivo(char *file_name, char *modo){ /* File_name: NOME DO ARQUIVO, modo:modo que o arquivo será aberto (leitura ou gravação */
+#define MODO "a+"
+
+FILE * inicializarArquivo(char *file_name){ /* File_name: NOME DO ARQUIVO, modo:modo que o arquivo será aberto (leitura ou gravação */
 	FILE *arquivo;
 
-	arquivo = fopen(file_name, modo);
+	arquivo = fopen(file_name, MODO);
 
 	if(arquivo == NULL){ 
 		printf("Erro na leitura ou na criação do arquivo (%s).\n", file_name);
@@ -19,4 +20,42 @@ FILE * inicializarArquivo(char *file_name, char *modo){ /* File_name: NOME DO AR
 	}
 	
 	return arquivo;
+}
+
+
+void gravarArvoreCidade(CIDADE *root, char *file_name){
+	char estado_temp[TAM_STRING], cidade_temp[TAM_STRING]; //TAM_STRING cte de cidade.h
+	FILE *arquivo;
+
+	arquivo = inicializarArquivo(file_name);
+
+	if(root != NULL){
+		fseek(arquivo, 0, SEEK_END);
+
+		strcpy(cidade_temp, root->nome_cidade);
+		strcpy(estado_temp, root->nome_estado);
+
+		//Retirando os espaços vazios para facilitar na hora da leitura
+		substituirEspacoNaString(cidade_temp);
+		substituirEspacoNaString(estado_temp);
+
+		// FORMAT_GRAVACAO constante (cidade.h) que informa os parâmetros para gravação
+		fprintf(arquivo, FORMAT_GRAVACAO,
+				cidade_temp,
+				estado_temp,
+				root->total_pessoas,
+				root->qtd_pessoa_sem_rendimento,
+				root->qtd_pessoas_0_1,
+				root->qtd_pessoas_1_2,
+				root->qtd_pessoas_2_3,
+				root->qtd_pessoas_3_5,
+				root->qtd_pessoas_5_10,
+				root->qtd_pessoas_10_20,
+				root->qtd_pessoas_mais_20);
+
+		fclose(arquivo);
+
+		gravarArvoreCidade(root->left, file_name);
+		gravarArvoreCidade(root->right, file_name);
+	}
 }
