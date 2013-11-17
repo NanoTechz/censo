@@ -54,6 +54,7 @@ void tirarQuebraLinha(char *texto){
 
 // Funcao para aux. na entrada de textos
 void inserirTexto(char *msg, char *texto, int tamanho){
+	int i, len, verificador = 1;
 	printf("\t%s\n", msg);
 	fgets(texto,tamanho, stdin);
 	tirarQuebraLinha(texto);
@@ -62,6 +63,22 @@ void inserirTexto(char *msg, char *texto, int tamanho){
 	if(strlen(texto) <=0 ){
 		printf("VALOR INVALIDO!\nDigite novamente:\n");
 		inserirTexto(msg, texto, tamanho);
+	}else{//Colocando os nomes num formato padrão
+		len = strlen(texto);
+
+		for (i = 0; i < len; ++i)
+		{
+			if(verificador == 1){
+				*(texto + i) = toupper(*(texto + i));
+				verificador = 0;
+			}else{
+				*(texto + i) = tolower(*(texto + i));
+			}
+
+			if(*(texto + i) == 32){
+				verificador = 1;
+			}
+		}
 	}
 }
 
@@ -91,4 +108,25 @@ void inserirNumeroLong(char *msg, long int *valor, long int minimo, long int max
 void pausar(char *msg){
 	printf("%s\nPressione ENTER para continuar o programa.\n", msg);
 	getchar();
+}
+
+//aux recebe a nova string
+void str_uppercase(char *str, char *aux){
+	int i;
+	
+	for(i=0;i<strlen(str);i++)
+	{
+		*(aux + i)=toupper(*(str + i));
+	}
+
+	*(aux + strlen(str)) = '\0';
+}
+
+//calcular o percentual
+float percentual(int x, long int total){
+	if(total == 0){ //evitar a divisão por zero
+		return 0;
+	}
+
+	return (x*100.0)/(1.0*total);
 }

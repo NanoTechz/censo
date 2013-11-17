@@ -32,6 +32,8 @@ typedef struct _tree{
 	struct _cidade *root;
 } TREE;
 
+
+//Recebe os dados e cria uma cidade
 CIDADE * criarCidade(){
 	CIDADE *newCidade;
 	long int verificar;
@@ -76,6 +78,8 @@ CIDADE * criarCidade(){
 		return criarCidade();
 	}
 
+	newCidade->left = NULL;
+	newCidade->right = NULL;
 	return newCidade;
 }
 
@@ -83,41 +87,144 @@ CIDADE * criarCidade(){
 void inserirCidade(CIDADE **node, CIDADE *newCidade){
 	int valor_strcmp, aux_valor_strcmp;
 	if((*node) == NULL){
-		printf("Salvando.\n");
 		*node = newCidade;
 	}else{
 		valor_strcmp = strcmp((*node)->nome_cidade, newCidade->nome_cidade);
 
-		printf("Inicializando o salvamento.\n");
+		if(valor_strcmp > 0){ // Nome cidade "menor" que a da raiz
+			inserirCidade(&((*node)->left), newCidade);
+		}else if(valor_strcmp < 0){
+			inserirCidade(&((*node)->right), newCidade);
+		}else{ // Senão as cidades possuem o mesmo nome , então verificar o estado
+			aux_valor_strcmp = strcmp((*node)->nome_estado, newCidade->nome_estado);
 
-		switch(valor_strcmp){
-			case 1: // Nome cidade "menor" que a da raiz
-					printf("%s\n", "menor");
-					inserirCidade(&((*node)->left), newCidade);
-				break;
-			case -1: // Nome cidade "maior" que a da raiz
-					printf("%s\n", "maior");
-					inserirCidade(&((*node)->right), newCidade);
-				break;
-			case 0: // Nome das cidades iguais -> verificar o estado
-					aux_valor_strcmp = strcmp((*node)->nome_estado, newCidade->nome_estado);
-					
-					if(aux_valor_strcmp == 1){
-						inserirCidade(&((*node)->left), newCidade);
-					}else if(aux_valor_strcmp == -1){
-						inserirCidade(&((*node)->right), newCidade);	
-					} // else Cidade já exite
-				break;
+			if(aux_valor_strcmp == 1){
+				inserirCidade(&((*node)->left), newCidade);
+			}else if(aux_valor_strcmp == -1){
+				inserirCidade(&((*node)->right), newCidade);	
+			} // else Cidade já exite
 		}
 	}
 }
 
+
+// Imprime os dados de uma única cidade
+void imprimirCidade(CIDADE *node){
+	char temp_estado[TAM_STRING];
+
+	if(node == NULL){
+		return;
+	}
+
+	str_uppercase(node->nome_estado, temp_estado);
+
+	printf("Cidade: %s – Estado: %s.\n", node->nome_cidade, temp_estado);
+
+	printf("Quantidade de pessoas de 10 anos ou mais de idade, por classes de rendimento nominal mensal:\n");
+	
+	printf("\t- Total de pessoas: %ld.\n", node->total_pessoas);
+
+	printf("\t- Sem rendimento: %d.\n", node->qtd_pessoa_sem_rendimento);
+
+	printf("\t- Ate 1 salario minimo: %d.\n", node->qtd_pessoas_0_1);
+
+	printf("\t- Mais de 1 a 2 salarios minimos: %d.\n", node->qtd_pessoas_1_2);
+
+	printf("\t- Mais de 2 a 3 salarios minimos: %d.\n", node->qtd_pessoas_2_3);
+
+	printf("\t- Mais de 3 a 5 salarios minimos: %d.\n", node->qtd_pessoas_3_5);
+
+	printf("\t- Mais de 5 a 10 salarios minimos: %d.\n", node->qtd_pessoas_5_10);
+
+	printf("\t- Mais de 10 a 20 salarios minimos: %d.\n", node->qtd_pessoas_10_20);
+
+	printf("\t- Mais de 20 salarios minimos: %d.\n\n", node->qtd_pessoas_mais_20);
+}
+
+// Imprime os dados de uma única cidade
+void imprimirCidadeComPercentual(CIDADE *node){
+	char temp_estado[TAM_STRING];
+
+	if(node == NULL){
+		return;
+	}
+
+	str_uppercase(node->nome_estado, temp_estado);
+
+	printf("Cidade: %s – Estado: %s.\n", node->nome_cidade, temp_estado);
+
+	printf("Quantidade de pessoas de 10 anos ou mais de idade, por classes de rendimento nominal mensal:\n");
+	
+	printf("\t- Total de pessoas: %ld.\n", node->total_pessoas);
+
+	printf("\t- Sem rendimento: %d - %.2f%%.\n", node->qtd_pessoa_sem_rendimento, percentual(node->qtd_pessoa_sem_rendimento, node->total_pessoas));
+
+	printf("\t- Ate 1 salario minimo: %d - %.2f%%.\n", node->qtd_pessoas_0_1, percentual(node->qtd_pessoas_0_1, node->total_pessoas));
+
+	printf("\t- Mais de 1 a 2 salarios minimos: %d - %.2f%%.\n", node->qtd_pessoas_1_2, percentual(node->qtd_pessoas_1_2, node->total_pessoas));
+
+	printf("\t- Mais de 2 a 3 salarios minimos: %d - %.2f%%.\n", node->qtd_pessoas_2_3, percentual(node->qtd_pessoas_2_3, node->total_pessoas));
+
+	printf("\t- Mais de 3 a 5 salarios minimos: %d - %.2f%%.\n", node->qtd_pessoas_3_5, percentual(node->qtd_pessoas_3_5, node->total_pessoas));
+
+	printf("\t- Mais de 5 a 10 salarios minimos: %d - %.2f%%.\n", node->qtd_pessoas_5_10, percentual(node->qtd_pessoas_5_10, node->total_pessoas));
+	printf("\t- Mais de 10 a 20 salarios minimos: %d - %.2f%%.\n", node->qtd_pessoas_10_20, percentual(node->qtd_pessoas_10_20, node->total_pessoas));
+
+	printf("\t- Mais de 20 salarios minimos: %d - %.2f%%.\n\n", node->qtd_pessoas_mais_20, percentual(node->qtd_pessoas_mais_20, node->total_pessoas));
+}
+
+// Imprime em pre ordem
 void pre_ordem(CIDADE *raiz){
 	if(raiz != NULL){
-		printf("%s\n ", raiz->nome_cidade);
+		imprimirCidade(raiz);
 		pre_ordem(raiz->left);
 		pre_ordem(raiz->right);
 	}
 }
 
+// Imprime em ordem
+void em_ordem(CIDADE *raiz){
+	if(raiz != NULL){
+		em_ordem(raiz->left);
+		imprimirCidade(raiz);
+		em_ordem(raiz->right);
+	}
+}
 
+CIDADE * pesquisarCidade(CIDADE *root, char *nome_cidade, char *nome_estado){
+	CIDADE *node;
+	char temp_cidade[TAM_STRING], temp_estado[TAM_STRING], aux1[TAM_STRING], aux2[TAM_STRING];
+
+
+	if(root == NULL){
+		return NULL;
+	}
+
+	str_uppercase(nome_estado, temp_estado);
+	str_uppercase(nome_cidade, temp_cidade);
+
+	node = root;
+
+	while(node != NULL){
+		str_uppercase(node->nome_estado, aux2);
+		str_uppercase(node->nome_cidade, aux1);
+
+		if(strcmp(aux1, temp_cidade) < 0){
+			node = node->right;
+		}else if(strcmp(aux1, temp_cidade) > 0){
+			node = node->left;
+		}else{
+			if(strcmp(aux2, temp_estado) == 0){
+				return node;
+			}else{
+				if(strcmp(aux2, temp_estado) < 0){
+					node = node->right;
+				}else if(strcmp(aux2, temp_estado) > 0){
+					node = node->left;
+				}
+			}
+		}
+	}
+
+	return  NULL;
+}

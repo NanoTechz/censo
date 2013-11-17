@@ -28,8 +28,11 @@ int main(){
 	int opcao = 0;
 	TREE *pais;
 	CIDADE *aux;
+	char nome_cidade[TAM_STRING], nome_estado[TAM_STRING];
 
 	pais = (TREE *)(malloc(sizeof(TREE)));
+
+	carregarArquivo(&pais->root, DEFAULT_NAME); // Carrega os dados salvos no arquivo 
 	
 	/* Loop com o fluxo principal */
 	do{
@@ -43,19 +46,38 @@ int main(){
 				limparTELA();
 				aux = criarCidade(); // Cria e recebe os valors de uma nova cidade
 				inserirCidade(&pais->root, aux); // Inseri o node na arvore
-				
-				pre_ordem(pais->root);
 
+				limparArquivo(DEFAULT_NAME);
 				gravarArvoreCidade(pais->root, DEFAULT_NAME); // Gravando a arvore inteira
 				pausar("Nova cidade inserida com sucesso.");
 				break;
 			case 2:
+				limparTELA();
+
+				printf("Consulta:\n");
+				inserirTexto("Insira o nome da cidade a ser consultada:", nome_cidade, TAM_STRING);
+				inserirTexto("Insira o estado em que a cidade pertence:", nome_estado, TAM_STRING);
+
+				aux = pesquisarCidade(pais->root, nome_cidade, nome_estado);
+
+				if(aux != NULL){
+					limparTELA();
+					printf("A consulta retornou:\n");
+					imprimirCidadeComPercentual(aux);
+				}else{
+					printf("Cidade não encontrada.");
+				}
+				pausar("");
 				break;
 			case 3:
 				break;
 			case 4:
 				break;
 			case 5:
+				limparTELA();
+				printf("Relacao de cidades ordenada por nome:\n");
+				em_ordem(pais->root);
+				pausar("");
 				break;
 			case 6:
 				break;
