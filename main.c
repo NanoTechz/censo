@@ -42,7 +42,7 @@ int main(){
 		getchar(); // Pega o ENTER
 
 		switch(opcao){
-			case 1:
+			case 1: //Add
 				limparTELA();
 				aux = criarCidade(); // Cria e recebe os valors de uma nova cidade
 				inserirCidade(&pais->root, aux); // Inseri o node na arvore
@@ -51,7 +51,7 @@ int main(){
 				gravarArvoreCidade(pais->root, DEFAULT_NAME); // Gravando a arvore inteira
 				pausar("Nova cidade inserida com sucesso.");
 				break;
-			case 2:
+			case 2: //Pesquisar
 				limparTELA();
 
 				printf("Consulta:\n");
@@ -69,19 +69,34 @@ int main(){
 				}
 				pausar("");
 				break;
-			case 3:
+			case 3://Excluir
+				LimparTELA();
+
+				printf("Exclusao:\n");
+				inserirTexto("Insira o nome da cidade a ser consultada:", nome_cidade, TAM_STRING);
+				inserirTexto("Insira o estado em que a cidade pertence:", nome_estado, TAM_STRING);
+
+				aux = pesquisarCidade(pais->root, nome_cidade, nome_estado);
+
+				if(aux != NULL){
+					limparTELA();
+					removerCidade(NULL);
+				}else{
+					printf("Cidade não foi removida.");
+				}
+				pausar("");
 				break;
 			case 4:
 				break;
-			case 5:
+			case 5://Listar Cidades
 				limparTELA();
 				printf("Relacao de cidades ordenada por nome:\n");
 				em_ordem(pais->root);
 				pausar("");
 				break;
-			case 6:
+			case 6: //Gerar relatório
 				break;
-			case 7:
+			case 7://Sair
 				return 0;
 				break;
 			default:

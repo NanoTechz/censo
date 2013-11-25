@@ -228,3 +228,54 @@ CIDADE * pesquisarCidade(CIDADE *root, char *nome_cidade, char *nome_estado){
 
 	return  NULL;
 }
+
+//Copia os dados da cidade 'B' para 'A'
+void copiarCidadeAParaB(CIDADE *a, CIDADE *b){
+	strcpy(a->nome_cidade, b->nome_cidade);
+	strcpy(a->nome_estado, b->nome_estado);
+
+	a->total_pessoas = b->total_pessoas;
+	a->qtd_pessoa_sem_rendimento = b->qtd_pessoa_sem_rendimento;
+	a->qtd_pessoas_0_1 = b->qtd_pessoas_0_1;
+	a->qtd_pessoas_1_2 = b->qtd_pessoas_1_2;
+	a->qtd_pessoas_2_3 = b->qtd_pessoas_2_3;
+	a->qtd_pessoas_3_5 = b->qtd_pessoas_3_5;
+	a->qtd_pessoas_5_10 = b->qtd_pessoas_5_10;
+	a->qtd_pessoas_10_20 = b->qtd_pessoas_10_20;
+	a->qtd_pessoas_mais_20 = b->qtd_pessoas_mais_20;
+}
+
+CIDADE * menorNo(CIDADE *no){
+	if(no == NULL){
+		return NULL;
+	}else{
+		if(no->left == NULL){
+			return no;
+		}else{
+			return menorNo(no->left);
+		}
+	}
+}
+
+void removerCidade(CIDADE *cidade_r){
+	CIDADE *aux;
+
+	if(cidade_r != NULL){
+		if((cidade_r->left != NULL) && (cidade_r->right!=NULL)){
+			aux = menorNo(cidade_r->right);
+			copiarCidadeAParaB(cidade_r, aux);
+
+			removerCidade(aux);
+		}else{
+			aux = cidade_r;
+
+			if(cidade_r->left == NULL){
+				cidade_r = cidade_r->right;
+			}else{
+				cidade_r = cidade_r->left;
+			}
+
+			free(aux);
+		}
+	} //nenhum bó para ser removido
+}
