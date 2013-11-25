@@ -8,6 +8,10 @@
 #define FORMAT_GRAVACAO "%s %s %ld %d %d %d %d %d %d %d %d\n"
 #define FORMAT_LEITURA "%s %s %ld %d %d %d %d %d %d %d %d"
 
+#define RELACAO_SR 0
+#define RELACAO_ATE_2S 1
+#define RELACAO_ACIMA_20s 2
+
 typedef struct _cidade {
 
 	char nome_cidade[TAM_STRING];
@@ -183,6 +187,14 @@ void pre_ordem(CIDADE *raiz){
 }
 
 // Imprime em ordem
+void em_ordemComPercentual(CIDADE *raiz){
+	if(raiz != NULL){
+		em_ordemComPercentual(raiz->left);
+		imprimirCidadeComPercentual(raiz);
+		em_ordemComPercentual(raiz->right);
+	}
+}
+
 void em_ordem(CIDADE *raiz){
 	if(raiz != NULL){
 		em_ordem(raiz->left);
@@ -270,9 +282,8 @@ int removerCidade(CIDADE **raiz, char *nome_cidade, char *nome_estado){
 	CIDADE *node;
 	char temp_cidade[TAM_STRING], temp_estado[TAM_STRING], aux1[TAM_STRING], aux2[TAM_STRING];
 
-
 	if(*(raiz) == NULL){ // pesquisa não encontrou nada
-		0;
+		return 0;
 	}
 
 	// Colocando os "textos" no mesmo formato
@@ -297,14 +308,12 @@ int removerCidade(CIDADE **raiz, char *nome_cidade, char *nome_estado){
 
 			}else{ // senão faça a exclusão normal
 				node = *(raiz);
-
-				printf("2\n");
 				if((*raiz)->left == NULL){
 					(*raiz) = (*raiz)->right;
 				}else{
 					(*raiz) = (*raiz)->left;
 				}
-				printf("free()\n");
+
 				free(node);
 			}
 
@@ -317,4 +326,155 @@ int removerCidade(CIDADE **raiz, char *nome_cidade, char *nome_estado){
 			}
 		}
 	}
+}
+
+/**********************************************************************************************
+ * Funções do menu 6;
+ */
+
+inserirNoPorSemREndimento(CIDADE **root, CIDADE *newCidade){
+	float percentualRaiz, percentualNo;
+	int valor_strcmp, aux_valor_strcmp;
+
+	if((*root) == NULL){
+		(*root) = newCidade;
+		return;
+	}
+
+	percentualRaiz = percentual((*root)->qtd_pessoa_sem_rendimento, (*root)->total_pessoas);
+	percentualNo = percentual(newCidade->qtd_pessoa_sem_rendimento, newCidade->total_pessoas);
+
+	if(percentualRaiz > percentualNo){
+		inserirNoPorSemREndimento(&((*root)->left), newCidade);
+	}else if(percentualNo > percentualRaiz){
+		inserirNoPorSemREndimento(&((*root)->right), newCidade);
+	}else{
+		valor_strcmp = strcmp((*root)->nome_cidade, newCidade->nome_cidade);
+
+		if(valor_strcmp > 0){ // Nome cidade "menor" que a da raiz
+			inserirNoPorSemREndimento(&((*root)->left), newCidade);
+		}else if(valor_strcmp < 0){
+			inserirNoPorSemREndimento(&((*root)->right), newCidade);
+		}else{ // Senão as cidades possuem o mesmo nome , então verificar o estado
+			aux_valor_strcmp = strcmp((*root)->nome_estado, newCidade->nome_estado);
+
+			if(aux_valor_strcmp == 1){
+				inserirNoPorSemREndimento(&((*root)->left), newCidade);
+			}else if(aux_valor_strcmp == -1){
+				inserirNoPorSemREndimento(&((*root)->right), newCidade);	
+			} // else Cidade já exite
+		}		
+	}
+}
+
+inserirNoPorAte2Salarios(CIDADE **root, CIDADE *newCidade){
+	float percentualRaiz, percentualNo;
+	int valor_strcmp, aux_valor_strcmp;
+
+	if((*root) == NULL){
+		(*root) = newCidade;
+		return;
+	}
+
+	percentualRaiz = percentual((*root)->qtd_pessoas_1_2, (*root)->total_pessoas);
+	percentualNo = percentual(newCidade->qtd_pessoas_1_2, newCidade->total_pessoas);
+
+	if(percentualRaiz > percentualNo){
+		inserirNoPorAte2Salarios(&((*root)->left), newCidade);
+	}else if(percentualNo > percentualRaiz){
+		inserirNoPorAte2Salarios(&((*root)->right), newCidade);
+	}else{
+		valor_strcmp = strcmp((*root)->nome_cidade, newCidade->nome_cidade);
+
+		if(valor_strcmp > 0){ // Nome cidade "menor" que a da raiz
+			inserirNoPorAte2Salarios(&((*root)->left), newCidade);
+		}else if(valor_strcmp < 0){
+			inserirNoPorAte2Salarios(&((*root)->right), newCidade);
+		}else{ // Senão as cidades possuem o mesmo nome , então verificar o estado
+			aux_valor_strcmp = strcmp((*root)->nome_estado, newCidade->nome_estado);
+
+			if(aux_valor_strcmp == 1){
+				inserirNoPorAte2Salarios(&((*root)->left), newCidade);
+			}else if(aux_valor_strcmp == -1){
+				inserirNoPorAte2Salarios(&((*root)->right), newCidade);	
+			} // else Cidade já exite
+		}
+	}
+}
+
+inserirNoPorAcima20Salarios(CIDADE **root, CIDADE *newCidade){
+	float percentualRaiz, percentualNo;
+	int valor_strcmp, aux_valor_strcmp;
+
+	if((*root) == NULL){
+		*root = newCidade;
+		return;
+	}
+	
+	percentualRaiz = percentual((*root)->qtd_pessoas_mais_20, (*root)->total_pessoas);
+	percentualNo = percentual(newCidade->qtd_pessoas_mais_20, newCidade->total_pessoas);
+
+	if(percentualRaiz > percentualNo){
+		inserirNoPorAcima20Salarios(&((*root)->left), newCidade);
+	}else if(percentualNo > percentualRaiz){
+		inserirNoPorAcima20Salarios(&((*root)->right), newCidade);
+	}else{
+		valor_strcmp = strcmp((*root)->nome_cidade, newCidade->nome_cidade);
+
+		if(valor_strcmp > 0){ // Nome cidade "menor" que a da raiz
+			inserirNoPorAcima20Salarios(&((*root)->left), newCidade);
+		}else if(valor_strcmp < 0){
+			inserirNoPorAcima20Salarios(&((*root)->right), newCidade);
+		}else{ // Senão as cidades possuem o mesmo nome , então verificar o estado
+			aux_valor_strcmp = strcmp((*root)->nome_estado, newCidade->nome_estado);
+
+			if(aux_valor_strcmp == 1){
+				inserirNoPorAcima20Salarios(&((*root)->left), newCidade);
+			}else if(aux_valor_strcmp == -1){
+				inserirNoPorAcima20Salarios(&((*root)->right), newCidade);	
+			} // else Cidade já exite
+		}	
+	}
+}
+
+void realocarArvore(CIDADE *antiga, CIDADE **raizNova, int logica){
+	CIDADE *temp;
+
+	temp = (CIDADE *)malloc(sizeof(CIDADE));
+
+	if(antiga == NULL){
+		return;
+	}
+
+	copiarCidadeAParaB(temp, antiga);
+
+	temp->left = NULL;
+	temp->right = NULL;
+
+	switch(logica){
+		case RELACAO_SR:
+				inserirNoPorSemREndimento(&(*raizNova), temp);
+			break;
+		case RELACAO_ATE_2S:
+				inserirNoPorAte2Salarios(&(*raizNova), temp);
+			break;
+		case RELACAO_ACIMA_20s:
+				inserirNoPorAcima20Salarios(&(*raizNova), temp);
+			break;
+	}
+
+	realocarArvore(antiga->left, &(*raizNova), logica);
+	realocarArvore(antiga->right, &(*raizNova), logica);
+}
+
+void freeArvore(CIDADE *node){
+	if(node == NULL){
+		return;
+	}
+
+	freeArvore(node->left);
+	freeArvore(node->right);
+
+	free(node);
+
 }

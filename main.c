@@ -8,7 +8,6 @@
 
 #define DEFAULT_NAME "database.dat"
 
-
 /**
  * arquivo.h
  * arquvo com funções para manipular o arquivo
@@ -23,6 +22,7 @@
  */
 
 void exibirOpcoes();
+void relatorio();
 
 int main(){
 	int opcao = 0, temp;
@@ -88,7 +88,7 @@ int main(){
 				}
 				pausar("");
 				break;
-			case 4:
+			case 4: // Função oculta
 				imprimirEndereco(pais->root);
 				pausar("");
 				break;
@@ -99,6 +99,9 @@ int main(){
 				pausar("");
 				break;
 			case 6: //Gerar relatório
+				limparTELA();
+				relatorio(pais->root);
+				pausar("");
 				break;
 			case 7://Sair
 				return 0;
@@ -121,4 +124,39 @@ void exibirOpcoes(){ /* Opções do menu */
 	printf("\t5) Mostrar a relação de cidades ordenada por nome\n");
 	printf("\t6) Gerar relatório de cidades\n");
 	printf("\t7) Sair do programa\n");
+}
+
+void relatorio(CIDADE *raiz){
+	int opcao;
+	TREE *raizTemp;
+
+	raizTemp=(TREE *)(malloc(sizeof(TREE)));
+	raizTemp->root = NULL;
+
+	printf("Relatorio:\n");
+	printf("\t1) Relacao das cidades por ordem crescente de percentual de pessoas sem rendimento\n");
+	printf("\t2) Relacao das cidades por ordem crescente de percentual de pessoas ate 2 salarios minimos\n");
+	printf("\t3) Relacao das cidades por ordem crescente de percentual de pessoas acima de 20 salarios minimos\n");
+	printf("\t4) Cancelar.\n");
+
+	scanf("%d", &opcao);
+	getchar(); // Pega o ENTER
+
+	switch(opcao){
+		case 1:
+				realocarArvore(raiz, &raizTemp->root, RELACAO_SR);
+			break;
+		case 2:
+				realocarArvore(raiz, &raizTemp->root, RELACAO_ATE_2S);
+			break;
+		case 3:
+				realocarArvore(raiz, &raizTemp->root, RELACAO_ACIMA_20s);
+			break;
+	}
+
+	if((opcao > 0) && (opcao < 4)){
+		em_ordemComPercentual(raizTemp->root);
+		freeArvore(raizTemp->root);
+	}
+	
 }
