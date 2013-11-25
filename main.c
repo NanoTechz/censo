@@ -25,7 +25,7 @@
 void exibirOpcoes();
 
 int main(){
-	int opcao = 0;
+	int opcao = 0, temp;
 	TREE *pais;
 	CIDADE *aux;
 	char nome_cidade[TAM_STRING], nome_estado[TAM_STRING];
@@ -71,20 +71,14 @@ int main(){
 				break;
 			case 3://Excluir
 				limparTELA();
-				//apagar
-				printf("KBC -> %s", pais->root->nome_cidade);
 
 				printf("Exclusao:\n");
 				inserirTexto("Insira o nome da cidade a ser consultada:", nome_cidade, TAM_STRING);
 				inserirTexto("Insira o estado em que a cidade pertence:", nome_estado, TAM_STRING);
 
-				aux = pesquisarCidade(pais->root, nome_cidade, nome_estado);
+				temp = removerCidade(&pais->root, nome_cidade, nome_estado);
 
-				if(aux != NULL){
-					//limparTELA();
-					removerCidade(aux);
-
-					//Atualizando o arquivo
+				if(temp == 1){
 					limparArquivo(DEFAULT_NAME);
 					gravarArvoreCidade(pais->root, DEFAULT_NAME); // Gravando a arvore inteira
 
@@ -92,8 +86,6 @@ int main(){
 				}else{
 					printf("Cidade não foi removida.");
 				}
-				//apagar
-				printf("KBC -> %s", pais->root->nome_cidade);
 				pausar("");
 				break;
 			case 4:

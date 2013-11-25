@@ -231,8 +231,6 @@ CIDADE * pesquisarCidade(CIDADE *root, char *nome_cidade, char *nome_estado){
 
 //Copia os dados da cidade 'B' para 'A'
 void copiarCidadeAParaB(CIDADE *a, CIDADE *b){
-	//apagar
-	imprimirCidade(a);
 	strcpy(a->nome_cidade, b->nome_cidade);
 	strcpy(a->nome_estado, b->nome_estado);
 
@@ -259,42 +257,64 @@ CIDADE * menorNo(CIDADE *no){
 	}
 }
 
-void removerCidade(CIDADE *cidade_r){
-	CIDADE *aux;
-
-	if(cidade_r != NULL){
-		if((cidade_r->left != NULL) && (cidade_r->right!=NULL)){
-			aux = menorNo(cidade_r->right);
-			copiarCidadeAParaB(cidade_r, aux);
-			//apagar
-			imprimirCidade(cidade_r);
-			removerCidade(aux);
-		}else{
-			aux = cidade_r;
-
-			if(cidade_r->left == NULL){
-				cidade_r = cidade_r->right;
-			}else{
-				cidade_r = cidade_r->left;
-			}
-			//apagar
-			imprimirCidade(cidade_r);
-			//apagar
-			imprimirCidade(aux);
-			free(aux);
-			//apagar
-			imprimirCidade(aux);
-
-			printf("Removendo nó.\n");
-		}
-	} //nenhum bó para ser removido
-}
-
-//Verificar os enderecos dos nós
+//Método para Verificar os enderecos dos nós e seus filhos
 void imprimirEndereco(CIDADE *raiz){
 	if(raiz != NULL){
 		printf("(%p) <- %p -> (%p)\n", raiz->left, raiz, raiz->right);
 		imprimirEndereco(raiz->left);
 		imprimirEndereco(raiz->right);
+	}
+}
+
+int removerCidade(CIDADE **raiz, char *nome_cidade, char *nome_estado){
+	CIDADE *node;
+	char temp_cidade[TAM_STRING], temp_estado[TAM_STRING], aux1[TAM_STRING], aux2[TAM_STRING];
+
+
+	if(*(raiz) == NULL){ // pesquisa não encontrou nada
+		0;
+	}
+
+	// Colocando os "textos" no mesmo formato
+	str_uppercase(nome_estado, temp_estado);
+	str_uppercase(nome_cidade, temp_cidade);
+
+	str_uppercase((*raiz)->nome_estado, aux2);
+	str_uppercase((*raiz)->nome_cidade, aux1);
+
+	if(strcmp(aux1, temp_cidade) < 0){
+		removerCidade(&((*raiz)->right), nome_cidade, nome_estado);
+	}else if(strcmp(aux1, temp_cidade) > 0){
+		removerCidade(&((*raiz)->left), nome_cidade, nome_estado);
+	}else{
+		if(strcmp(aux2, temp_estado) == 0){ //Encontrou a cidade para ser removida
+			
+			if(((*raiz)->left != NULL) && ((*raiz)->right!=NULL)){ // Verifica se o nó possuí dos filhos
+				
+				node = menorNo((*raiz)->right); // Pega o menor no da direita da árvore
+				copiarCidadeAParaB((*raiz), node); // Copia os dados 
+				removerCidade(&(*raiz)->right, (*raiz)->nome_cidade, (*raiz)->nome_estado); // Remove o menor do da esquerda da árvore
+
+			}else{ // senão faça a exclusão normal
+				node = *(raiz);
+
+				printf("2\n");
+				if((*raiz)->left == NULL){
+					(*raiz) = (*raiz)->right;
+				}else{
+					(*raiz) = (*raiz)->left;
+				}
+				printf("free()\n");
+				free(node);
+			}
+
+			return 1;
+		}else{//Cidades com nomes == então vetificar os estados
+			if(strcmp(aux2, temp_estado) < 0){
+				removerCidade(&((*raiz)->right), nome_cidade, nome_estado);
+			}else if(strcmp(aux2, temp_estado) > 0){
+				removerCidade(&((*raiz)->left), nome_cidade, nome_estado);
+			}
+		}
 	}
 }
