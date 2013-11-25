@@ -231,6 +231,8 @@ CIDADE * pesquisarCidade(CIDADE *root, char *nome_cidade, char *nome_estado){
 
 //Copia os dados da cidade 'B' para 'A'
 void copiarCidadeAParaB(CIDADE *a, CIDADE *b){
+	//apagar
+	imprimirCidade(a);
 	strcpy(a->nome_cidade, b->nome_cidade);
 	strcpy(a->nome_estado, b->nome_estado);
 
@@ -264,7 +266,8 @@ void removerCidade(CIDADE *cidade_r){
 		if((cidade_r->left != NULL) && (cidade_r->right!=NULL)){
 			aux = menorNo(cidade_r->right);
 			copiarCidadeAParaB(cidade_r, aux);
-
+			//apagar
+			imprimirCidade(cidade_r);
 			removerCidade(aux);
 		}else{
 			aux = cidade_r;
@@ -274,8 +277,24 @@ void removerCidade(CIDADE *cidade_r){
 			}else{
 				cidade_r = cidade_r->left;
 			}
-
+			//apagar
+			imprimirCidade(cidade_r);
+			//apagar
+			imprimirCidade(aux);
 			free(aux);
+			//apagar
+			imprimirCidade(aux);
+
+			printf("Removendo nó.\n");
 		}
 	} //nenhum bó para ser removido
+}
+
+//Verificar os enderecos dos nós
+void imprimirEndereco(CIDADE *raiz){
+	if(raiz != NULL){
+		printf("(%p) <- %p -> (%p)\n", raiz->left, raiz, raiz->right);
+		imprimirEndereco(raiz->left);
+		imprimirEndereco(raiz->right);
+	}
 }

@@ -70,7 +70,9 @@ int main(){
 				pausar("");
 				break;
 			case 3://Excluir
-				LimparTELA();
+				limparTELA();
+				//apagar
+				printf("KBC -> %s", pais->root->nome_cidade);
 
 				printf("Exclusao:\n");
 				inserirTexto("Insira o nome da cidade a ser consultada:", nome_cidade, TAM_STRING);
@@ -79,14 +81,24 @@ int main(){
 				aux = pesquisarCidade(pais->root, nome_cidade, nome_estado);
 
 				if(aux != NULL){
-					limparTELA();
-					removerCidade(NULL);
+					//limparTELA();
+					removerCidade(aux);
+
+					//Atualizando o arquivo
+					limparArquivo(DEFAULT_NAME);
+					gravarArvoreCidade(pais->root, DEFAULT_NAME); // Gravando a arvore inteira
+
+					printf("Arquivo removido com sucesso.\n");
 				}else{
 					printf("Cidade não foi removida.");
 				}
+				//apagar
+				printf("KBC -> %s", pais->root->nome_cidade);
 				pausar("");
 				break;
 			case 4:
+				imprimirEndereco(pais->root);
+				pausar("");
 				break;
 			case 5://Listar Cidades
 				limparTELA();
